@@ -20,19 +20,24 @@
 <body>
     <div class="container">
         <div class="row">
+            <!-- Topics Cloud! -->
+            <div class="col-md-12">
+                <div id="buttons-view"></div>
+            </div>
+        </div>
+        <div class="row">
             <!-- gifs will get dumped here -->
-            <div class="col-md-9">
+            <div class="col-md-10">
                 <div class="card-deck">
                     <div class="row" id="gifs-view">
                     </div>
                 </div>
             </div>
             <!-- Rendered buttons will get dumped Here  -->
-            <div class="col-md-3">
-                <div id="buttons-view"></div>
+            <div class="col-md-2">
                 <form id="gif-form">
-                    <label for="gif-input">Create A Button To Click and Search</label>
-                    <input type="text" id="gif-input" placeholder="Shia Lebouf">
+                    <label for="gif-input">Create A New Button To Click and Search</label>
+                    <input type="text" id="gif-input" placeholder="Try the Bears one above">
                     <!-- Button triggers new gif to be added -->
                     <input id="add-gif" type="submit" class="btn btn-primary" value="Create Button">
                 </form>
