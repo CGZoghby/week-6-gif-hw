@@ -20,23 +20,21 @@
 <body>
     <div class="container">
         <div class="row">
+            <!-- gifs will get dumped here -->
             <div class="col-md-9">
                 <div class="card-deck">
-                    <div class="row" id="animals-view">
-                        <!-- animals will get dumped here -->
+                    <div class="row" id="gifs-view">
                     </div>
                 </div>
             </div>
-            
             <!-- Rendered buttons will get dumped Here  -->
             <div class="col-md-3">
                 <div id="buttons-view"></div>
-                <form id="animal-form">
-                    <label for="animal-input">Add an animal</label>
-                    <input type="text" id="animal-input">
-                    <br>
-                    <!-- Button triggers new animal to be added -->
-                    <input id="add-animal" type="submit" value="Add an animal">
+                <form id="gif-form">
+                    <label for="gif-input">Create A Button To Click and Search</label>
+                    <input type="text" id="gif-input" placeholder="Shia Lebouf">
+                    <!-- Button triggers new gif to be added -->
+                    <input id="add-gif" type="submit" class="btn btn-primary" value="Create Button">
                 </form>
             </div>
         </div>

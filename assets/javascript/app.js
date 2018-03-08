@@ -1,69 +1,88 @@
 $(document).ready(function () {
-    // displayanimalInfo function re-renders the HTML to display the appropriate content
+    // displaygifInfo function re-renders the HTML to display the appropriate content
     //"http://api.giphy.com/v1/gifs/search?q=ryan+gosling&api_key=YOUR_API_KEY&limit=5" <-- example
-    var animals = [];
+    var gifs = [];
 
-    function displayanimalInfo() {
-        var animal = $(this).attr("data-name");
-        var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + animal + "&api_key=p8zcPAjaO8q33EgfKVKEreHhlnOUlHep&limit=16";
-        // Creates AJAX call for the specific animal button being clicked
+    function displaygifInfo() {
+        var gif = $(this).attr("data-name");
+        var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + gif + "&api_key=p8zcPAjaO8q33EgfKVKEreHhlnOUlHep&limit=10"; //limit keyword is purely dictated by gifs/row ratio
+        // Creates AJAX call for the specific gif button being clicked
         $.ajax({
             url: queryURL,
             method: "GET"
         }).then(function (response) {
-            // First empty animals viewport
-            $("#animals-view").empty();
+            // First empty gifs viewport
+            $("#gifs-view").empty();
             //then populate with new stuff
             for (var i = 0; i < response.data.length; i++) {
                 columnDiv = $("<div>") //adding column divs with bootstrap neatly controls the layout of the gifs
-                animalBigDiv = $("<div>"); //this adds an additional level of aesthetic by displaying all gifs on bootstrap's new "cards"
-                animalImg = $("<img>"); //adds img src
-                animalSmallDiv = $("<div>") //will contain the rating of the attached gif
+                gifBigDiv = $("<div>"); //this adds an additional level of aesthetic by displaying all gifs on bootstrap's new "cards"
+                gifImg = $("<img>"); //adds img src
+                gifSmallDiv = $("<div>") //will contain the rating of the attached gif
                 columnDiv.addClass("col-md-3");
-                animalBigDiv.addClass("card");
-                animalImg.addClass("card-img-top");
-                animalImg.attr("src", response.data[i].images.downsized.url);
-                animalImg.attr("alt", animal + ".gif");
-                animalSmallDiv.addClass("card-body")
-                animalSmallDiv.append(`<h5 class="card-title"> Rating: ${response.data[i].rating} </h5>`);
-                animalImg.append(animalSmallDiv);
-                animalBigDiv.append(animalImg);
-                columnDiv.append(animalBigDiv);
-                $("#animals-view").append(columnDiv);
+                gifBigDiv.addClass("card");
+                gifImg.addClass("card-img-top");
+                gifImg.attr("src", response.data[i].images.fixed_height_still.url); // I elected for the fixed height option because that would control height of rows, in theory
+                gifImg.attr("data-still", response.data[i].images.fixed_height_still.url)
+                gifImg.attr("data-animate", response.data[i].images.fixed_height.url)
+                gifImg.attr("data-state", "still")
+                gifImg.attr("alt", response.data[i].slug + ".gif");
+                gifSmallDiv.addClass("card-body")
+                gifSmallDiv.append(`<p class="card-text"> Rating: ${response.data[i].rating} </p>`);
+                gifBigDiv.append(gifImg);
+                gifBigDiv.append(gifSmallDiv);
+                columnDiv.append(gifBigDiv);
+                $("#gifs-view").append(columnDiv);
             };
         });
     };
 
     function renderButtons() {
-        // Deleting the animals prior to adding new animals
+        // Deleting the gifs prior to adding new gifs
         // (this is necessary otherwise you will have repeat buttons)
         $("#buttons-view").empty();
-        // Looping through the array of animals
-        for (var i = 0; i < animals.length; i++) {
-            // Then dynamicaly generating buttons for each animal in the array
+        // Looping through the array of gifs
+        for (var i = 0; i < gifs.length; i++) {
+            // Then dynamicaly generating buttons for each gif in the array
             // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
             var a = $("<button>");
-            // Adding a class of animal-btn to our button
-            a.addClass("animal-btn");
+            // Adding a class of gif-btn to our button
+            a.addClass("gif-btn btn btn-success");
             // Adding a data-attribute
-            a.attr("data-name", animals[i]);
+            a.attr("data-name", gifs[i]);
             // Providing the initial button text
-            a.text(animals[i]);
+            a.text(gifs[i]);
             // Adding the button to the buttons-view div
             $("#buttons-view").append(a);
         }
     }
-    // This function handles events where the add animal button is clicked
-    $("#add-animal").on("click", function (event) {
+
+    // This function handles events where the add gif button is clicked
+    $("#add-gif").on("click", function (event) {
         event.preventDefault();
         // This line of code will grab the input from the textbox
-        var animal = $("#animal-input").val().trim();
-        // The animal from the textbox is then added to our array
-        animals.push(animal);
-        // Calling renderButtons which handles the processing of our animal array
+        var gif = $("#gif-input").val().trim();
+        // The gif from the textbox is then added to our array
+        gifs.push(gif);
+        // Calling renderButtons which handles the processing of our gif array
         renderButtons();
     });
 
-    // Adding click event listeners to all elements with a class of "animal"
-    $(document).on("click", ".animal-btn", displayanimalInfo);
+    $("#gifs-view").on("click","img", function() {
+        // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+        var state = $(this).attr("data-state");
+        // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+        // Then, set the image's data-state to animate
+        // Else set src to the data-still value
+        if (state === "still") {
+          $(this).attr("src", $(this).attr("data-animate"));
+          $(this).attr("data-state", "animate");
+        } else {
+          $(this).attr("src", $(this).attr("data-still"));
+          $(this).attr("data-state", "still");
+        }
+      });
+
+    // Adding click event listeners to all elements with a class of "gif"
+    $(document).on("click", ".gif-btn", displaygifInfo);
 });
